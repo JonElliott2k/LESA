@@ -1,11 +1,18 @@
 #!/bin/bash
 
 echo '======================================================='
-echo '- Initial Linux Security - '
-echo 'YOU WILL NEED TO CONFIGURE YOUR TERMINAL TO ALLOW UNLIMITED SCROLLBACK OTHERWISE THE OUTPUT WILL LIKELY BE CUT OFF!!!'
+echo '    __    ___________ ___ '
+echo '   / /   / ____/ ___//   |'
+echo '  / /   / __/  \__ \/ /| |'
+echo ' / /___/ /___ ___/ / ___ |'
+echo '/_____/_____//____/_/  |_|' 
+echo ''                  
+echo '- Linux Endpoint Security Assessment [LESA] - '
+echo ''
+echo 'Please remember to enable unlimited scrollback in your terminal'
 echo '======================================================='
 printf "\n"
-echo 'I wrote this script to work with either Debian based systems or Fedora based systems.'
+echo 'LESA works with either Debian-based systems or Fedora-based systems.'
 printf "\n"
 printf "\n"
 echo '1. Debian family  2. Fedora family  3. Type 3 to skip update and service list [1/2/3]'
@@ -22,7 +29,7 @@ then
 	echo '--------------------------------------------------'
 	printf "\n"
 	echo 'List of running services'
-	printf "----------------------- "
+	echo '--------------------------------------------------'
 	sudo service --status-all
 elif [ $answer == 2 ]
 then
@@ -63,7 +70,6 @@ printf "\n"
 awk -F: '($3 == "0") {print}' /etc/passwd
 echo '--------------------------------------------------'
 printf "\n"
-
 
 echo 'Listening network ports'
 printf "\n"
@@ -107,6 +113,12 @@ find / -nouser
 echo '--------------------------------------------------'
 printf "\n"
 
+echo 'List of ungrouped files/directories'
+printf "\n"
+df --local -P | awk '{if (NR!=1) print $6}' | xargs -I '{}' find '{}' -xdev -nogroup
+echo '--------------------------------------------------'
+printf "\n"
+
 echo 'List of installed packages (head and tail of list)'
 printf "\n"
 dpkg --list | head & dpkg --list | tail
@@ -129,7 +141,6 @@ cat /etc/ssh/sshd_config | grep 'AllowUsers'
 cat /etc/ssh/sshd_config | grep 'Protocol'
 echo '--------------------------------------------------'
 echo ''
-
 
 
 if [ $answer == 2 ]
@@ -168,6 +179,33 @@ cat /var/log/auth.log | tail
 echo '--------------------------------------------------'
 printf "\n"
 
+echo 'User Umask (027 or more restrictive)'
+printf "\n"
+grep "umask" /etc/bashrc
+grep "umask" /etc/profile /etc/profile.d/*.sh
+echo '--------------------------------------------------'
+printf "\n"
+
+echo 'Restriction of su command'
+printf "\n"
+grep pam_wheel.so /etc/pam.d/su
+grep wheel /etc/group
+echo '--------------------------------------------------'
+printf "\n"
+
+echo 'Permissions on /etc/passwd , /etc/shadow , /etc/group'
+printf "\n"
+stat /etc/passwd
+stat /etc/shadow
+stat /etc/group
+echo '--------------------------------------------------'
+printf "\n"
+
+echo 'Accounts with no password'
+printf "\n"
+sudo awk -F: '($2 == "" ) { print $1 " does not have a password "}' /etc/shadow
+echo '--------------------------------------------------'
+printf "\n"
 
 if [ $answer == 1 ]
 then	
@@ -212,12 +250,12 @@ fi
 sleep 3s
 echo '=============================================================='
 printf "Dont forget some of these common security practices \n\n"
+printf "Remove any unused programs/services/applications/etc  \n"
 printf "Disable IPv6 if youre not using it. \n"
 printf "Ignore ICMP or broadcast requests if possible  \n"
 printf "Possibly disable CTRL+ALT+DEL "
 printf "Enforce strong passwords and two-step authentication where possible \n "
 printf "Restrict certain users to cron and other sensitive resources  \n"
-printf "Remove any unused programs/services/applications/etc  \n"
-printf "Dont forget tools like Fail2Ban, LogWatch, TripWire, etc. \n"
+printf "Dont forget to consider tools like Fail2Ban, LogWatch, TripWire, etc. \n"
 printf "and many more... \n"
 echo '=============================================================='
