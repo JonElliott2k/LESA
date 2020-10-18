@@ -1,4 +1,9 @@
-# Linux Endpoint Security Assessment 
+# Linux Endpoint Security Assessment                   
+   __   ___________ 
+  / /  / __/ __/ _ |
+ / /__/ _/_\ \/ __ |
+/____/___/___/_/ |_|   
+
 
 A simple bash script that runs different commands to conduct a basic security assessment of a Linux endpoint. 
 
